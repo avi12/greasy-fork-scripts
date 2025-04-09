@@ -2,7 +2,7 @@
 // @name         Player controls for NVIDIA GTC
 // @namespace    http://tampermonkey.net/
 // @version      0.0
-// @description
+// @description  Adds player controls
 // @author       Avi (https://avi12.com)
 // @copyright    2025 Avi (https://avi12.com)
 // @license      MIT
