@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Auto Dark Mode for Reddit
 // @namespace    https://bengrant.dev
-// @version      0.0
+// @version      0.1
 // @description  Works for desktop
 // @author       Avi (https://avi12.com)
 // @copyright    2025 Avi (https://avi12.com)
@@ -11,10 +11,10 @@
 // @grant        none
 // ==/UserScript==
 
-(function() {
+(function () {
   "use strict";
 
-  const darkQuery = matchMedia('(prefers-color-scheme: dark)');
+  const darkQuery = matchMedia("(prefers-color-scheme: dark)");
   const selMenuButton = "#expand-user-drawer-button";
 
   function isWebPageDark() {
@@ -26,7 +26,7 @@
   }
 
   async function toggleTheme() {
-    const { activeElement } = document;
+    const {activeElement} = document;
     const elMenuButton = document.querySelector(selMenuButton);
     elMenuButton.click();
 
@@ -40,13 +40,13 @@
         elMenuButton.click();
         activeElement.focus();
       }
-    }).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    }).observe(document.documentElement, {attributes: true, attributeFilter: ["class"]});
 
     do {
       const elDarkModeToggle = document.querySelector("[name=darkmode-switch-name]");
       elDarkModeToggle?.click();
       await new Promise(resolve => setTimeout(resolve, 100));
-    } while(isKeepTogglingDarkMode);
+    } while (isKeepTogglingDarkMode);
   }
 
   new MutationObserver((_, observer) => {
@@ -59,7 +59,7 @@
     if (!isThemeNeedsToStay()) {
       toggleTheme();
     }
-  }).observe(document, { childList: true, subtree: true });
+  }).observe(document, {childList: true, subtree: true});
 
   darkQuery.addEventListener("change", toggleTheme);
 })();

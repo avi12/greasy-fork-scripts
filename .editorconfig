@@ -3,3 +3,5 @@ root = true
 [*]
 indent_size = 2
 tab_width = 2
+ij_javascript_force_quote_style = true
+ij_javascript_use_double_quotes = true
