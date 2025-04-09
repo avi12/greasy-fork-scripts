@@ -12,8 +12,8 @@
 // @grant        none
 // ==/UserScript==
 
-(function() {
-  'use strict';
+(function () {
+  "use strict";
 
   document.addEventListener("keydown", e => {
     switch (e.code) {
