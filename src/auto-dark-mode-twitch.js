@@ -14,13 +14,15 @@
 (function () {
   "use strict";
 
-  const darkQuery = matchMedia("(prefers-color-scheme: dark)");
-
-  function setDark(isDark) {
-    document.body.classList.value = document.body.classList.value.replace(/tw-root--theme-(light|dark)/, isDark ? "tw-root--theme-dark" : "tw-root--theme-light");
-    localStorage.setItem("twilight.theme", `${isDark ? 1 : 0}`);
+  /**
+   * @param theme {"dark" | "light"}
+   */
+  function setTheme(theme) {
+    document.body.classList.value = document.body.classList.value.replace(/tw-root--theme-(light|dark)/, `tw-root--theme-${theme}`);
+    localStorage.setItem("twilight.theme", `${theme === "dark" ? 1 : 0}`);
   }
 
-  setDark(darkQuery.matches);
-  darkQuery.addEventListener("change", e => setDark(e.matches));
+  const darkQuery = matchMedia("(prefers-color-scheme: dark)");
+  setTheme(darkQuery.matches ? "dark" : "light");
+  darkQuery.addEventListener("change", e => setTheme(e.matches ? "dark" : "light"));
 })();

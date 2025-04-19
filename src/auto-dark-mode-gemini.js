@@ -15,9 +15,16 @@
 (function () {
   "use strict";
 
-  function setDark(isDark) {
-    document.body.classList.value = document.body.classList.value.replace(/(light|dark)-theme/, isDark ? "dark-theme" : "light-theme");
-    localStorage.setItem("Bard-Color-Theme", isDark ? "Bard-Dark-Theme" : "Bard-Light-Theme");
+  /**
+   * @param theme {"dark" | "light"}
+   */
+  function setTheme(theme) {
+    document.body.classList.value = document.body.classList.value.replace(/(light|dark)-theme/, `${theme}-theme`);
+    const storageItem = {
+      light: "Light",
+      dark: "Dark"
+    };
+    localStorage.setItem("Bard-Color-Theme", `Bard-${storageItem[theme]}-Theme`);
   }
 
   new MutationObserver((_, observer) => {
@@ -28,7 +35,7 @@
 
     observer.disconnect();
     const darkQuery = matchMedia("(prefers-color-scheme: dark)");
-    setDark(darkQuery.matches);
-    darkQuery.addEventListener("change", e => setDark(e.matches));
+    setTheme(darkQuery.matches ? "dark" : "light");
+    darkQuery.addEventListener("change", e => setTheme(e.matches ? "dark" : "light"));
   }).observe(document, {childList: true, subtree: true});
 })();

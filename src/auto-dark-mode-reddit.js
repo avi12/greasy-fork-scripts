@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Auto Dark Mode for Reddit
 // @namespace    https://bengrant.dev
-// @version      0.1
+// @version      0.2
 // @description  Works for desktop
 // @author       Avi (https://avi12.com)
 // @copyright    2025 Avi (https://avi12.com)
@@ -14,52 +14,15 @@
 (function () {
   "use strict";
 
+  /**
+   * @param theme {"dark" | "light"}
+   */
+  function setTheme(theme) {
+    document.body.classList.value = document.body.classList.value.replace(/theme-(dark|light)/, `theme-${theme}`);
+    document.cookie = `theme=${theme === "dark" ? 2 : 1};`;
+  }
+
   const darkQuery = matchMedia("(prefers-color-scheme: dark)");
-  const selMenuButton = "#expand-user-drawer-button";
-
-  function isWebPageDark() {
-    return document.cookie.match(/theme=(\d)/)[1] === "2";
-  }
-
-  function isThemeNeedsToStay(isDark = darkQuery.matches) {
-    return isWebPageDark() && isDark || !isWebPageDark() && !isDark;
-  }
-
-  async function toggleTheme() {
-    const {activeElement} = document;
-    const elMenuButton = document.querySelector(selMenuButton);
-    elMenuButton.click();
-
-
-    let isKeepTogglingDarkMode = true;
-    new MutationObserver((_, observer) => {
-      const isDark = document.documentElement.classList.contains("theme-dark");
-      if (isThemeNeedsToStay(isDark)) {
-        observer.disconnect();
-        isKeepTogglingDarkMode = false;
-        elMenuButton.click();
-        activeElement.focus();
-      }
-    }).observe(document.documentElement, {attributes: true, attributeFilter: ["class"]});
-
-    do {
-      const elDarkModeToggle = document.querySelector("[name=darkmode-switch-name]");
-      elDarkModeToggle?.click();
-      await new Promise(resolve => setTimeout(resolve, 100));
-    } while (isKeepTogglingDarkMode);
-  }
-
-  new MutationObserver((_, observer) => {
-    const elMenuButton = document.querySelector(selMenuButton);
-    if (!elMenuButton) {
-      return;
-    }
-
-    observer.disconnect();
-    if (!isThemeNeedsToStay()) {
-      toggleTheme();
-    }
-  }).observe(document, {childList: true, subtree: true});
-
-  darkQuery.addEventListener("change", toggleTheme);
+  setTheme(darkQuery.matches ? "dark" : "light");
+  darkQuery.addEventListener("change", e => setTheme(e.matches ? "dark" : "light"));
 })();

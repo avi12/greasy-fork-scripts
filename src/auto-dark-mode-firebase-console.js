@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Auto Dark Mode for Firebase Console
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Works for desktop
 // @author       Avi (https://avi12.com)
 // @copyright    2025 Avi (https://avi12.com)
@@ -14,11 +14,23 @@
 (function () {
   "use strict";
 
-  function setTheme(theme) {
+  const darkQuery = matchMedia("(prefers-color-scheme: dark)");
+  darkQuery.addEventListener("change", e => {
+    const theme = e.matches ? "dark" : "light";
     document.body.classList.value = document.body.classList.value.replace(/fire-scheme-(light|dark)/, `fire-scheme-${theme}`);
-  }
+    document.documentElement.style.colorScheme = theme;
+  });
 
-  const instanceDarkTheme = matchMedia("(prefers-color-scheme: dark)");
-  setTheme(instanceDarkTheme.matches ? "dark" : "light");
-  instanceDarkTheme.addEventListener("change", ({matches}) => setTheme(matches ? "dark" : "light"));
+  new MutationObserver((_, observer) => {
+    // noinspection CssInvalidHtmlTagReference
+    const elThemeMenuToggle = document.querySelector("fire-theme-switcher");
+    if (!elThemeMenuToggle) {
+      return;
+    }
+
+    observer.disconnect();
+    elThemeMenuToggle.click();
+    const elThemeMenu = document.querySelector("#mat-menu-panel-1 > div > button:last-of-type");
+    elThemeMenu.click();
+  }).observe(document, {childList: true, subtree: true});
 })();
