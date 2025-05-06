@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Auto Dark Mode for Twitch
 // @namespace    https://bengrant.dev
-// @version      0.2
+// @version      0.3
 // @description  Works for desktop
 // @author       Avi (https://avi12.com)
 // @copyright    2025 Avi (https://avi12.com)
@@ -18,7 +18,7 @@
    * @param theme {"dark" | "light"}
    */
   function setTheme(theme) {
-    document.body.classList.value = document.body.classList.value.replace(/tw-root--theme-(light|dark)/, `tw-root--theme-${theme}`);
+    document.documentElement.classList.value = document.documentElement.classList.value.replace(/tw-root--theme-(light|dark)/, `tw-root--theme-${theme}`);
     localStorage.setItem("twilight.theme", `${theme === "dark" ? 1 : 0}`);
   }
 
