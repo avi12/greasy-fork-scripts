@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Auto Dark Mode for Twitch
 // @namespace    https://bengrant.dev
-// @version      0.3
+// @version      0.4
 // @description  Works for desktop
 // @author       Avi (https://avi12.com)
 // @copyright    2025 Avi (https://avi12.com)
@@ -15,14 +15,42 @@
   "use strict";
 
   /**
-   * @param theme {"dark" | "light"}
+   * @returns {HTMLButtonElement}
    */
-  function setTheme(theme) {
-    document.documentElement.classList.value = document.documentElement.classList.value.replace(/tw-root--theme-(light|dark)/, `tw-root--theme-${theme}`);
-    localStorage.setItem("twilight.theme", `${theme === "dark" ? 1 : 0}`);
+  const getElButtonProfile = () => document.querySelector("button[data-a-target=user-menu-toggle]");
+  const OBSERVER_OPTIONS = { childList: true, subtree: true };
+
+  function setTheme() {
+    const { activeElement } = document;
+    const tlButtonProfile = getElButtonProfile();
+    new MutationObserver((_, observer) => {
+      const elDarkToggle = document.querySelector("[data-test-selector=user-menu-dropdown__main-menu] input[type=checkbox]");
+      if (!elDarkToggle) {
+        return;
+      }
+      observer.disconnect();
+      elDarkToggle.click();
+      tlButtonProfile.click();
+      activeElement.focus();
+    }).observe(document, OBSERVER_OPTIONS);
+    tlButtonProfile.click();
   }
 
   const darkQuery = matchMedia("(prefers-color-scheme: dark)");
-  setTheme(darkQuery.matches ? "dark" : "light");
-  darkQuery.addEventListener("change", e => setTheme(e.matches ? "dark" : "light"));
+  new MutationObserver((_, observer) => {
+    if (!getElButtonProfile()) {
+      return;
+    }
+
+    const themeNew = darkQuery.matches ? "dark" : "light";
+    const themeCurrent = document.documentElement.classList.value.match(/tw-root--theme-(dark|light)/)[1];
+    const isChangeTheme = themeNew !== themeCurrent;
+    observer.disconnect();
+    if (!isChangeTheme) {
+      return;
+    }
+    setTheme();
+  }).observe(document, OBSERVER_OPTIONS);
+
+  darkQuery.addEventListener("change", setTheme);
 })();
