@@ -22,7 +22,7 @@
 
   function setTheme() {
     const { activeElement } = document;
-    const tlButtonProfile = getElButtonProfile();
+    const elButtonProfile = getElButtonProfile();
     new MutationObserver((_, observer) => {
       const elDarkToggle = document.querySelector("[data-test-selector=user-menu-dropdown__main-menu] input[type=checkbox]");
       if (!elDarkToggle) {
@@ -30,10 +30,10 @@
       }
       observer.disconnect();
       elDarkToggle.click();
-      tlButtonProfile.click();
+      elButtonProfile.click();
       activeElement.focus();
     }).observe(document, OBSERVER_OPTIONS);
-    tlButtonProfile.click();
+    elButtonProfile.click();
   }
 
   const darkQuery = matchMedia("(prefers-color-scheme: dark)");
